@@ -1,3 +1,5 @@
+package com.mag.parsing;
+
 
 import com.mag.parsing.CalculationParser;
 import com.mag.parsing.Expression;
