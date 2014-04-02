@@ -33,51 +33,51 @@ public class ArrayVisualizerPanel extends JPanel {
         avp.setVisible(true);
 
         while (true) {
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new CocktailSortingMethod());
-//            Thread.sleep(2000);
-//
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new InsertionSortingMethod());
-//            Thread.sleep(2000);
-//
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new SelectionSortingMethod());
-//            Thread.sleep(2000);
-//
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new StoogeSortingMethod());
-//            Thread.sleep(2000);
+            avp.initialize();
+            avp.sort(new BubbleSortingMethod());
+            Thread.sleep(2000);
+            
+            avp.initialize();
+            avp.sort(new CocktailSortingMethod());
+            Thread.sleep(2000);
+
+            avp.initialize();
+            avp.sort(new InsertionSortingMethod());
+            Thread.sleep(2000);
+
+            avp.initialize();
+            avp.sort(new StoogeSortingMethod());
+            Thread.sleep(2000);
 
             ArrayVisualizerPanel.SLEEPTIME *= 10;
 
-            avp.initializeRandom();
-            Thread.sleep(2000);
-            avp.sort(new MostRadixSortingMethod());
+            avp.initialize();
+            avp.sort(new SelectionSortingMethod());
             Thread.sleep(2000);
 
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new QuickSortingMethod());
-//            Thread.sleep(2000);
-//
-//            ArrayVisualizerPanel.SLEEPTIME /= 2;
-//
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new MergeSortingMethod());
-//            Thread.sleep(2000);
-//
-//            avp.initializeRandom();
-//            Thread.sleep(2000);
-//            avp.sort(new HeapSortingMethod());
-//            Thread.sleep(2000);
-//
-//            ArrayVisualizerPanel.SLEEPTIME /= 5;
+            avp.initialize();
+            avp.sort(new MostRadixSortingMethod());
+            Thread.sleep(2000);
+            
+            avp.initialize();
+            avp.sort(new LeastRadixSortingMethod());
+            Thread.sleep(2000);
+
+            avp.initialize();
+            avp.sort(new QuickSortingMethod());
+            Thread.sleep(2000);
+
+            ArrayVisualizerPanel.SLEEPTIME /= 2;
+
+            avp.initialize();
+            avp.sort(new MergeSortingMethod());
+            Thread.sleep(2000);
+
+            avp.initialize();
+            avp.sort(new HeapSortingMethod());
+            Thread.sleep(2000);
+
+            ArrayVisualizerPanel.SLEEPTIME /= 5;
         }
     }
 
@@ -133,7 +133,11 @@ public class ArrayVisualizerPanel extends JPanel {
         s.sort(array, this);
         this.title = "";
         System.out.printf("it took %d milliseconds\n", System.currentTimeMillis() - time);
-
+    }
+    
+    private void initialize() {
+        initializeRandom();
+        //initializeReversed();
     }
 
     private void initializeRandom() {
@@ -157,6 +161,20 @@ public class ArrayVisualizerPanel extends JPanel {
         }
 
         array[0] = array.length;
+    }
+    
+    private void initializeMostlySorted() {
+        
+    }
+    
+    private void initializeMostSortedReversed() {
+        
+    }
+    
+    private void initializeReversed() {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = array.length - i;
+        }
     }
 
     public void setColor(int index, Color color) {

@@ -11,15 +11,9 @@ import java.util.Queue;
  */
 public class MostRadixSortingMethod extends SortingMethod {
     private static final int RADIX = 5;
-    private Queue[] registers = new Queue[RADIX];
-    Deque<Run> runs = new LinkedList<Run>();
 
     public MostRadixSortingMethod() {
-        super("Radix Sort");
-
-        for (int i = 0; i < registers.length; i++) {
-            registers[i] = new LinkedList<Integer>();
-        }
+        super("Most-Significant-Digit Radix Sort");
     }
 
     @Override
@@ -32,17 +26,18 @@ public class MostRadixSortingMethod extends SortingMethod {
 
         int log = (int) Math.ceil(Math.log(largest) / Math.log(RADIX));
 
-        addRun(log - 1, 0, a.length);
-
-        while (!runs.isEmpty()) {
-            Run run = runs.removeFirst();
-            radixSort0(a, run.pow, run.low, run.high);
-        }
+        radixSort0(a, log - 1, 0, a.length);
     }
 
     private void radixSort0(int[] a, int i, int low, int high) {
         if (i < 0)
             return;
+        
+        Queue[] registers = new Queue[RADIX];
+        
+        for (int n = 0; n < registers.length; n++) {
+            registers[n] = new LinkedList<Integer>();
+        }
 
         for (int j = low; j < high; j++)
             registers[getDigit(a[j], i)].offer(a[j]);
@@ -58,32 +53,11 @@ public class MostRadixSortingMethod extends SortingMethod {
             }
 
             int high2 = index;
-            addRun(i - 1, low2, high2);
+            radixSort0(a, i - 1, low2, high2);
         }
-    }
-
-    private void printInfo(int i) {
-        System.out.println("for the " + Math.pow(RADIX, i) + "th/st power: ");
-
-        for (int j = 0; j < RADIX; j++)
-            System.out.println(j + ": " + registers[j]);
     }
 
     private int getDigit(int a, int pow) {
         return (int)(a / Math.pow(RADIX, pow)) % RADIX;
-    }
-
-    private void addRun(int pow, int low, int high) {
-        runs.addFirst(new Run(pow, low, high));
-    }
-
-    private class Run {
-        int pow, low, high;
-
-        public Run(int pow, int low, int high) {
-            this.pow = pow;
-            this.low = low;
-            this.high = high;
-        }
     }
 }

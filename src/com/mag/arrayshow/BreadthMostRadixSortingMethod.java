@@ -15,7 +15,7 @@ public class BreadthMostRadixSortingMethod extends SortingMethod {
     Deque<Run> runs = new LinkedList<Run>();
 
     public BreadthMostRadixSortingMethod() {
-        super("Radix Sort (Breadth-First)");
+        super("Most-Significant-Digit Radix Sort (Breadth-First)");
 
         for (int i = 0; i < registers.length; i++) {
             registers[i] = new LinkedList<Integer>();

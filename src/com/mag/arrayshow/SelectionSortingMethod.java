@@ -23,7 +23,7 @@ public class SelectionSortingMethod extends SortingMethod {
                     lowest = j;
 
                 //focus(j, null);
-                halt();
+                //halt();
             }
 
             swap(i, lowest);

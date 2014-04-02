@@ -13,7 +13,7 @@ public class LeastRadixSortingMethod extends SortingMethod {
     private Queue[] registers = new Queue[RADIX];
 
     public LeastRadixSortingMethod() {
-        super("Radix Sort");
+        super("Least-Significant-Digit Radix Sort");
 
         for (int i = 0; i < registers.length; i++) {
             registers[i] = new LinkedList<Integer>();
