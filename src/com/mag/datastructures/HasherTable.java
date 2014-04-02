@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class HasherTable<K, V> implements java.util.Map<K, V> {
     public static final int SMALLEST_SIZE = 8;
 
-    @SuppressWarnings("unchecked") 
+    @SuppressWarnings("unchecked")
     EntryNode[] hashes = (EntryNode[]) Array.newInstance(EntryNode.class, SMALLEST_SIZE);
     boolean resizeDisabled = false;
     int totalBuckets = SMALLEST_SIZE, occupiedBuckets = 0, elements = 0;

@@ -1,21 +1,30 @@
 package com.mag.arrayshow;
 
 import java.awt.Color;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  *
  * @author michael
  */
-public class QuickSortingMethod extends SortingMethod {
-    public QuickSortingMethod() {
-        super("Quick Sort");
+public class BreadthQuickSortingMethod extends SortingMethod {
+    Deque<Run> runs = new LinkedList<Run>();
+    
+    public BreadthQuickSortingMethod() {
+        super("Quick Sort (Breadth-First)");
     }
 
     public void sort(int[] array) {
         if (array == null || array.length <= 1)
             return;
 
-        quickSort0(array, 0, array.length);
+        addRun(0, array.length);
+        
+        while (!runs.isEmpty()) {
+            Run run = runs.removeFirst();
+            quickSort0(array, run.low, run.high);
+        }
     }
 
     private void quickSort0(int[] a, int low, int high) { //the valid elements of the list are [low, high]
@@ -68,11 +77,8 @@ public class QuickSortingMethod extends SortingMethod {
         }
 
         swap(i, high - 1); //put the pivot into its correct spot.
-        focus(i, Color.BLUE);
-
-        quickSort0(a, low, i);
-        quickSort0(a, i + 1, high);
-        focus(i, null);
+        addRun(low, i);
+        addRun(i + 1, high);
     }
 
     private static int pivot(int[] a, int low, int high) {
@@ -91,5 +97,18 @@ public class QuickSortingMethod extends SortingMethod {
         }
 
         return -1;
+    }
+    
+    private void addRun(int low, int high) {
+        runs.addLast(new Run(low, high));
+    }
+    
+    private class Run {
+        int low, high;
+
+        public Run(int low, int high) {
+            this.low = low;
+            this.high = high;
+        }
     }
 }

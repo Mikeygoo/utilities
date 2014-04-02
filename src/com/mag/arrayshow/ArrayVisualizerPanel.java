@@ -13,9 +13,11 @@ import javax.swing.JPanel;
  * @author michael
  */
 public class ArrayVisualizerPanel extends JPanel {
-    public static int MAXVAR = 1000;
-    public static int SLEEPTIME = 2;
-    
+    public static boolean PARTIAL_BARS = true;
+    public static boolean BARS = false;
+    public static int MAXVAR = 100;
+    public static int SLEEPTIME = 5;
+
     public static void main(String[] args) throws InterruptedException {
         final JFrame jf = new JFrame();
         final ArrayVisualizerPanel avp = new ArrayVisualizerPanel(100);
@@ -26,43 +28,59 @@ public class ArrayVisualizerPanel extends JPanel {
             }
         });
         jf.add(avp);
-        jf.setSize(500, 500);
+        jf.setSize(750, 750);
         jf.setVisible(true);
         avp.setVisible(true);
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new BubbleSortingMethod());
-        Thread.sleep(2000);
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new InsertionSortingMethod());
-        Thread.sleep(2000);
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new SelectionSortingMethod());
-        Thread.sleep(2000);
-        
-        ArrayVisualizerPanel.SLEEPTIME *= 10;
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new QuickSortingMethod());
-        Thread.sleep(2000);
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new MergeSortingMethod());
-        Thread.sleep(2000);
-        
-        avp.initializeRandom();
-        Thread.sleep(2000);
-        avp.sort(new HeapSortingMethod());
-        Thread.sleep(2000);
+
+        while (true) {
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new CocktailSortingMethod());
+//            Thread.sleep(2000);
+//    
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new InsertionSortingMethod());
+//            Thread.sleep(2000);
+//    
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new SelectionSortingMethod());
+//            Thread.sleep(2000);
+//            
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new StoogeSortingMethod());
+//            Thread.sleep(2000);
+
+            ArrayVisualizerPanel.SLEEPTIME *= 10;
+
+            avp.initializeRandom();
+            Thread.sleep(2000);
+            avp.sort(new MostRadixSortingMethod());
+            Thread.sleep(2000);
+
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new QuickSortingMethod());
+//            Thread.sleep(2000);
+//            
+//            ArrayVisualizerPanel.SLEEPTIME /= 2;
+//
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new MergeSortingMethod());
+//            Thread.sleep(2000);
+//
+//            avp.initializeRandom();
+//            Thread.sleep(2000);
+//            avp.sort(new HeapSortingMethod());
+//            Thread.sleep(2000);
+//
+//            ArrayVisualizerPanel.SLEEPTIME /= 5;
+        }
     }
-    
+
     private int[] array;
     private Color[] colarray;
     private String title = "";
@@ -76,7 +94,7 @@ public class ArrayVisualizerPanel extends JPanel {
         this.array = new int[arraysize];
         colarray = new Color[arraysize];
     }
-    
+
     @Override
     public void paint(Graphics g) {
         double xscl = (double) getWidth() / array.length;
@@ -85,15 +103,26 @@ public class ArrayVisualizerPanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
         g.drawString(title, 0, 10);
-        for(int i = 0; i < array.length; i++){
-            if(colarray[i]!=null)
-                g.setColor(colarray[i]);
-            else
-                g.setColor(Color.GREEN);
-            g.fillRect((int)(i*xscl), (int)(getHeight()-array[i]*yscl), Math.max((int)xscl,2)-1, Math.max((int)(array[i]*yscl),1));
+
+        for (int i = 0; i < array.length; i++) {
+            if (PARTIAL_BARS) {
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, ((int) Math.max(1, array[i] * yscl)));
+                if (colarray[i] != null)
+                    g.setColor(colarray[i]);
+                else
+                    g.setColor(Color.GREEN);
+                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, (getHeight() / MAXVAR));
+            } else {
+                if (colarray[i] != null)
+                    g.setColor(colarray[i]);
+                else
+                    g.setColor(Color.GREEN);
+                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, BARS ? ((int) Math.max(1, array[i] * yscl)) : (getHeight() / MAXVAR));
+            }
         }
     }
-    
+
     public void sort(SortingMethod s) {
         System.out.println("started");
         long time = System.currentTimeMillis();
@@ -101,22 +130,32 @@ public class ArrayVisualizerPanel extends JPanel {
         s.sort(array, this);
         this.title = "";
         System.out.printf("it took %d milliseconds\n", System.currentTimeMillis() - time);
-        
+
     }
 
     private void initializeRandom() {
         for (int i = 0; i < array.length; i++) {
-            array[i] = (int) (Math.random() * MAXVAR);
+            array[i] = i;
         }
+        
+        for (int i = 0; i < array.length; i++) {
+            int j = (int) (Math.random() * array.length);
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        
+        repaint();
     }
-    
+
     private void initializeBad() {
         for (int i = 1; i < array.length; i++) {
             array[i] = i;
         }
+
         array[0] = array.length;
     }
-    
+
     public void setColor(int index, Color color) {
         colarray[index] = color;
     }
