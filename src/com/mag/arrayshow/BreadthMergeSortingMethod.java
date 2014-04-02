@@ -21,8 +21,10 @@ class BreadthMergeSortingMethod extends SortingMethod {
     protected void sort(int[] a) {
         temp = new int[a.length];
         mergeSort0(a, 0, a.length);
+
         while (runs.size() > 1) {
             Run ra = runs.removeFirst(), rb = runs.removeFirst();
+
             if (ra.high != rb.low) {
                 runs.addFirst(rb); //overshot it!
             } else {
@@ -30,6 +32,7 @@ class BreadthMergeSortingMethod extends SortingMethod {
                 addRun(ra.low, rb.high);
             }
         }
+
         temp = null;
     }
 
@@ -87,7 +90,7 @@ class BreadthMergeSortingMethod extends SortingMethod {
     private void addRun(int low, int high) {
         runs.offer(new Run(low, high));
     }
-    
+
     private class Run {
         int low, high;
 

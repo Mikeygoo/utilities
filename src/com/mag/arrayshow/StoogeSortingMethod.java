@@ -17,6 +17,7 @@ public class StoogeSortingMethod extends SortingMethod {
     private void stoogeSort0(int[] a, int low, int high) {
         if (a[low] > a[high])
             swap(high, low);
+
         if (high - low + 1 >= 3) {
             int t = (high - low + 1) / 3;
             stoogeSort0(a, low, high - t);

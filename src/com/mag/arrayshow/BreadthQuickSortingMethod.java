@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class BreadthQuickSortingMethod extends SortingMethod {
     Deque<Run> runs = new LinkedList<Run>();
-    
+
     public BreadthQuickSortingMethod() {
         super("Quick Sort (Breadth-First)");
     }
@@ -20,7 +20,7 @@ public class BreadthQuickSortingMethod extends SortingMethod {
             return;
 
         addRun(0, array.length);
-        
+
         while (!runs.isEmpty()) {
             Run run = runs.removeFirst();
             quickSort0(array, run.low, run.high);
@@ -98,11 +98,11 @@ public class BreadthQuickSortingMethod extends SortingMethod {
 
         return -1;
     }
-    
+
     private void addRun(int low, int high) {
         runs.addLast(new Run(low, high));
     }
-    
+
     private class Run {
         int low, high;
 

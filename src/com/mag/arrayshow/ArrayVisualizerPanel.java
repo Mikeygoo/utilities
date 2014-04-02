@@ -37,17 +37,17 @@ public class ArrayVisualizerPanel extends JPanel {
 //            Thread.sleep(2000);
 //            avp.sort(new CocktailSortingMethod());
 //            Thread.sleep(2000);
-//    
+//
 //            avp.initializeRandom();
 //            Thread.sleep(2000);
 //            avp.sort(new InsertionSortingMethod());
 //            Thread.sleep(2000);
-//    
+//
 //            avp.initializeRandom();
 //            Thread.sleep(2000);
 //            avp.sort(new SelectionSortingMethod());
 //            Thread.sleep(2000);
-//            
+//
 //            avp.initializeRandom();
 //            Thread.sleep(2000);
 //            avp.sort(new StoogeSortingMethod());
@@ -64,7 +64,7 @@ public class ArrayVisualizerPanel extends JPanel {
 //            Thread.sleep(2000);
 //            avp.sort(new QuickSortingMethod());
 //            Thread.sleep(2000);
-//            
+//
 //            ArrayVisualizerPanel.SLEEPTIME /= 2;
 //
 //            avp.initializeRandom();
@@ -108,16 +108,19 @@ public class ArrayVisualizerPanel extends JPanel {
             if (PARTIAL_BARS) {
                 g.setColor(Color.DARK_GRAY);
                 g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, ((int) Math.max(1, array[i] * yscl)));
+
                 if (colarray[i] != null)
                     g.setColor(colarray[i]);
                 else
                     g.setColor(Color.GREEN);
+
                 g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, (getHeight() / MAXVAR));
             } else {
                 if (colarray[i] != null)
                     g.setColor(colarray[i]);
                 else
                     g.setColor(Color.GREEN);
+
                 g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, BARS ? ((int) Math.max(1, array[i] * yscl)) : (getHeight() / MAXVAR));
             }
         }
@@ -137,14 +140,14 @@ public class ArrayVisualizerPanel extends JPanel {
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
-        
+
         for (int i = 0; i < array.length; i++) {
-            int j = (int) (Math.random() * array.length);
+            int j = (int)(Math.random() * array.length);
             int temp = array[i];
             array[i] = array[j];
             array[j] = temp;
         }
-        
+
         repaint();
     }
 

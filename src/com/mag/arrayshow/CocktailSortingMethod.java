@@ -20,7 +20,7 @@ public class CocktailSortingMethod extends SortingMethod {
                     swapped = true;
                 }
             }
-            
+
             for (int i = a.length - 2; i >= 0; i--) {
                 if (a[i + 1] < a[i]) {
                     swap(i + 1, i);
