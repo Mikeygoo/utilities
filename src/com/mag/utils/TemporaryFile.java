@@ -21,7 +21,7 @@ public class TemporaryFile implements Closeable {
     private File f = null;
 
     public TemporaryFile() {
-        this("m" + System.nanoTime() + "derp");
+        this("m" + System.nanoTime() + "tempo");
     }
 
     public TemporaryFile(String name) {
@@ -54,6 +54,10 @@ public class TemporaryFile implements Closeable {
 
     @Override
     public void close() throws IOException {
+        if (f != null) {
+            f.delete();
+        }
+        
         f = null;
     }
 }

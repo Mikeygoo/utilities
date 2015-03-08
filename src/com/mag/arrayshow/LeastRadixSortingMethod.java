@@ -9,7 +9,7 @@ import java.util.Queue;
  * @author michael
  */
 public class LeastRadixSortingMethod extends SortingMethod {
-    private static final int RADIX = 5;
+    private static final int RADIX = 2;
     private Queue[] registers = new Queue[RADIX];
 
     public LeastRadixSortingMethod() {

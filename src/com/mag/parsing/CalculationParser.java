@@ -76,21 +76,15 @@ public class CalculationParser {
 
     private static BasicNode interpretExpression(Deque<String> strings, int precedence) throws ParseException {
         BasicNode e = null;
-        boolean unaryNegative = false;
 
         if ("-".equals(strings.peekFirst())) {
             strings.pollFirst();
-            unaryNegative = true;
+            e = new SubtractionNode(new NumberNode(0), interpretExpression(strings, IMMT_PRECEDENCE));
         }
 
         if ("(".equals(strings.peekFirst())) {
             strings.pollFirst();
             e = interpretExpression(strings, Integer.MIN_VALUE);
-
-            if (unaryNegative) {
-                e = new SubtractionNode(new NumberNode(0), e);
-                unaryNegative = false;
-            }
 
             String polled = strings.pollFirst();
 
@@ -235,7 +229,7 @@ public class CalculationParser {
 
                         do {
                             strings.pollFirst();
-                            exps.add(interpretExpression(strings, precedence));
+                            exps.add(interpretExpression(strings, Integer.MIN_VALUE));
                         } while (strings.peekFirst() != null && ",".equals(strings.peekFirst()));
 
                         String polled = strings.pollFirst();
@@ -250,11 +244,6 @@ public class CalculationParser {
                     }
                 }
             }
-        }
-
-
-        if (unaryNegative) {
-            e = new SubtractionNode(new NumberNode(0), e);
         }
 
         return e;
@@ -320,8 +309,11 @@ public class CalculationParser {
         protected double toNumberValue(Map<String, Double> vars) throws UnresolvedNameException {
             double lval = l.toNumberValue(vars), rval = r.toNumberValue(vars);
 
-            if (rval == 0 || Double.isNaN(rval))
-                return Double.NaN;
+            if (rval == 0)
+                return Double.POSITIVE_INFINITY * Math.signum(lval);
+            
+            if (Double.isInfinite(rval) || Double.isNaN(rval + lval))
+                return 0;
 
             return lval / rval;
         }

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -15,23 +14,28 @@ import javax.swing.JPanel;
 public class ArrayVisualizerPanel extends JPanel {
     public static boolean PARTIAL_BARS = true;
     public static boolean BARS = false;
-    public static int MAXVAR = 100;
-    public static int SLEEPTIME = 5;
+    public static int MAXVAR = 250;
+    public static int SLEEPTIME = 1;
 
     public static void main(String[] args) throws InterruptedException {
         final JFrame jf = new JFrame();
-        final ArrayVisualizerPanel avp = new ArrayVisualizerPanel(100);
+        final ArrayVisualizerPanel avp = new ArrayVisualizerPanel(250);
+        
         jf.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 avp.setSize(jf.getWidth(), jf.getHeight() - 20);
             }
         });
+        
         jf.add(avp);
         jf.setSize(750, 750);
         jf.setVisible(true);
         avp.setVisible(true);
-
+        
+        avp.initialize();
+        avp.sort(new TimeSortingMethod());
+        
         while (true) {
             avp.initialize();
             avp.sort(new BubbleSortingMethod());
@@ -54,9 +58,11 @@ public class ArrayVisualizerPanel extends JPanel {
             avp.initialize();
             avp.sort(new SelectionSortingMethod());
             Thread.sleep(2000);
+            
+            ArrayVisualizerPanel.SLEEPTIME /= 1;
 
             avp.initialize();
-            avp.sort(new MostRadixSortingMethod());
+            avp.sort(new BreadthMostRadixSortingMethod());
             Thread.sleep(2000);
             
             avp.initialize();
@@ -103,28 +109,31 @@ public class ArrayVisualizerPanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
         g.drawString(title, 0, 10);
-
+        
         for (int i = 0; i < array.length; i++) {
+            
             if (PARTIAL_BARS) {
-                g.setColor(Color.DARK_GRAY);
+                g.setColor(BAR_COLOR);
                 g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, ((int) Math.max(1, array[i] * yscl)));
 
                 if (colarray[i] != null)
                     g.setColor(colarray[i]);
                 else
-                    g.setColor(Color.GREEN);
+                    g.setColor(ELEMENT_COLOR);
 
-                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, (getHeight() / MAXVAR));
+                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, (int) yscl);
             } else {
                 if (colarray[i] != null)
                     g.setColor(colarray[i]);
                 else
-                    g.setColor(Color.GREEN);
+                    g.setColor(ELEMENT_COLOR);
 
-                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, BARS ? ((int) Math.max(1, array[i] * yscl)) : (getHeight() / MAXVAR));
+                g.fillRect((int)(i * xscl), (int)(getHeight() - array[i] * yscl), Math.max((int)xscl, 2) - 1, BARS ? ((int) Math.max(1, array[i] * yscl)) : (int) yscl);
             }
         }
     }
+    public static final Color BAR_COLOR = Color.DARK_GRAY;
+    public static final Color ELEMENT_COLOR = Color.GREEN;
 
     public void sort(SortingMethod s) {
         System.out.println("started");
@@ -138,6 +147,7 @@ public class ArrayVisualizerPanel extends JPanel {
     private void initialize() {
         initializeRandom();
         //initializeReversed();
+        //initializeMostlySortedReversed();
     }
 
     private void initializeRandom() {
@@ -164,11 +174,55 @@ public class ArrayVisualizerPanel extends JPanel {
     }
     
     private void initializeMostlySorted() {
-        
+        initializeRandom();
+        quickSortMostly0(array, 0, array.length);
     }
     
-    private void initializeMostSortedReversed() {
-        
+    private void initializeMostlySortedReversed() {
+        initializeRandom();
+        quickSortMostly0(array, 0, array.length);
+        for (int i = 0; i < array.length / 2; i++)
+            swap(array, i, array.length - i - 1);
+    }
+    
+    private void quickSortMostly0(int[] a, int low, int high) { //the valid elements of the list are [low, high]
+        if (high - low <= a.length / 10)
+            return;
+
+        int n = high - low; //number of elements in the list.
+        int p = low + 1; //median of three; pivot's index.
+        int pivot = a[p]; //p's value, the pivot value
+        int i = low;
+        int j = high - 2;
+        initializeReversed();
+        swap(a, p, high - 1); //store the pivot at the end.
+
+        while (i <= j) {
+            while (a[i] < pivot && i < high - 2) { //don't run into the pivot we stored at index [high-1]
+                i++;
+            }
+
+            while (a[j] > pivot && j > low) {
+                j--;
+            }
+
+            if (i <= j) {
+                swap(a, i, j);
+                i++;
+                j--;
+            }
+        }
+
+        swap(a, i, high - 1); //put the pivot into its correct spot.
+
+        quickSortMostly0(a, low, i);
+        quickSortMostly0(a, i + 1, high);
+    }
+
+    private void swap(int[] a, int i, int j) {    
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
     }
     
     private void initializeReversed() {

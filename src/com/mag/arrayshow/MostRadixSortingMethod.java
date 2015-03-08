@@ -10,7 +10,7 @@ import java.util.Queue;
  * @author michael
  */
 public class MostRadixSortingMethod extends SortingMethod {
-    private static final int RADIX = 5;
+    private static final int RADIX = 10;
 
     public MostRadixSortingMethod() {
         super("Most-Significant-Digit Radix Sort");

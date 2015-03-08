@@ -19,22 +19,19 @@ import com.mag.parsing.UnresolvedNameException;
  *
  * @author michael
  */
-public class GraphPanel extends JPanel implements Transformable {
+public class SlopePanel extends JPanel implements Transformable {
     private double xbl = -10, xbh = 10, xscale = 0.001; /* X draw-bounds low and high */
     private double xlineint = 1, ylineint = 1;
     private double xdl = -10, xdh = 10, ydl = -10, ydh = 10; /* X and Y window bounds. (X display low, x display high... */
-    private HashMap<Expression, Color> exps = new HashMap<Expression, Color>();
+    private Expression diffeq;
 
-    public GraphPanel() {
+    public SlopePanel() {
         setFocusable(true);
     }
 
-    public void setFunctionsAndRedraw(Collection<? extends Expression> c) {
+    public void setFunctionAndRedraw(Expression e) {
         //TODO: assign each function a color, and store in hashmap.
-        exps.clear();
-
-        for (Expression exp : c)
-            exps.put(exp, getRandomColor());
+        diffeq = e;
 
         repaintViewport();
     }
@@ -73,10 +70,9 @@ public class GraphPanel extends JPanel implements Transformable {
             g.drawLine((int)(xmid), 0, (int)(xmid), getHeightGraph());
             Color oldcolor = g.getColor();
 
-            for (Entry<Expression, Color> entry : exps.entrySet()) {
-                g.setColor(entry.getValue());
-                paintExpression(g, entry.getKey(), xmid, xfactor, ymid, yfactor);
-            }
+            
+            g.setColor(Color.RED);
+            paintSlopeField(g, xmid, xfactor, ymid, yfactor);
 
             g2d.setStroke(oldstroke);
             g2d.setColor(oldcolor);
@@ -86,27 +82,28 @@ public class GraphPanel extends JPanel implements Transformable {
         }
     }
 
-    public void paintExpression(Graphics g, Expression e, double xmid, double xfactor, double ymid, double yfactor) throws UnresolvedNameException {
+    public void paintSlopeField(Graphics g, double xmid, double xfactor, double ymid, double yfactor) throws UnresolvedNameException {
         HashMap<String, Double> h = new HashMap<String, Double>();
-        double lastX = 0, lastY = 0;
-        boolean hasBegan = false;
 
-        for (double x = xbl; x < xbh; x += xscale) {
-            h.put("x", Math.round(x / xscale) * xscale);
-            double y = e.solve(h);
+        for (double x = xbl; x < xbh; x += xlineint) {
+            for (double y = xbl; y < xbh; y += ylineint) {
+                h.put("x", Math.round(x / xscale) * xscale);
+                h.put("y", Math.round(y / xscale) * xscale);
+                double yprime = diffeq.solve(h);
 
-            //System.out.println("x = "+Math.round(x/xscale)*xscale+", y = "+y);
-            if (Double.isInfinite(y) || Double.isInfinite(lastY) || Double.isNaN(y) || Double.isNaN(lastY))
-                hasBegan = false;
-
-            if (hasBegan) {
-                double xt1 = xmid + x * xfactor, yt1 = ymid - y * yfactor, xt2 = xmid + lastX * xfactor, yt2 = ymid - lastY * yfactor;
+                //System.out.println("x = "+Math.round(x/xscale)*xscale+", y = "+y);
+                if (Double.isInfinite(yprime) || Double.isNaN(yprime))
+                    continue;
+                double length = 0.5;
+                double deltaX = length / Math.sqrt(yprime * yprime + 1);
+                double deltaY = length * yprime / Math.sqrt(yprime * yprime + 1);
+                
+                double x1 = x - deltaX, x2 = x + deltaX;
+                double y1 = y - deltaY, y2 = y + deltaY;
+                
+                double xt1 = xmid + x1 * xfactor, yt1 = ymid - y1 * yfactor, xt2 = xmid + x2 * xfactor, yt2 = ymid - y2 * yfactor;
                 g.drawLine((int)xt1, (int)yt1, (int)xt2, (int)yt2);
-            } else
-                hasBegan = true;
-
-            lastX = x;
-            lastY = y;
+            }
         }
     }
 

@@ -61,6 +61,18 @@ public class MathFunctionModule {
 
             return Math.sqrt(doubles[0]);
         }
+        
+        case "csc": {
+            if (doubles.length != 1) throw new UnresolvedNameException("csc()");
+
+            return 1.0/Math.sin(doubles[0]);
+        }
+        
+        case "sec": {
+            if (doubles.length != 1) throw new UnresolvedNameException("sec()");
+
+            return 1.0/Math.cos(doubles[0]);
+        }
         }
 
         throw new UnresolvedNameException(function + "()");

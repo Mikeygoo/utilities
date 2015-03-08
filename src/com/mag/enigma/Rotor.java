@@ -43,7 +43,7 @@ public class Rotor {
         HashMap<Character, Character> reint = new HashMap<Character, Character>();
         char aGets = forwards.get('A');
 
-        for (char i = 'A'; i < 'Z'; i++)
+        for (char i = 'A'; i < 'Z'; i++) //iterate [A, Z)
             reint.put(i, forwards.get((char)(i + 1)));
 
         reint.put('Z', aGets);

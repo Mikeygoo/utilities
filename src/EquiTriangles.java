@@ -31,7 +31,8 @@ public class EquiTriangles extends JFrame {
     @Override
     public void paint(Graphics g) {
         //you can change the coordinates.
-        drawTriangle(g, 250, 100, 100, 250, 400, 250);
+        g.clearRect(0, 0, getWidth(), getHeight());
+        drawTriangle(g, getWidth()/2, 0, 0, getHeight(), getWidth(), getHeight());
     }
 
     public void drawTriangle(Graphics g, int tX, int tY, int lX, int lY, int rX, int rY) {
@@ -51,7 +52,8 @@ public class EquiTriangles extends JFrame {
         if (abs(rX - lX) < 5 || abs(rY - tY) < 5)
             return;
 
-        //recurse on subtriangles to left and right.
+        //recurse on subtriangles to top, left, and right.
+        drawTriangle(g, tX, tY, tlX, tlY, trX, trY);
         drawTriangle(g, tlX, tlY, lX, lY, lrX, lrY);
         drawTriangle(g, trX, trY, lrX, lrY, rX, rY);
     }
